@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="d-flex p-3 mt-3" style="background-color:#e6f2ff">
+    <%= form_tag(employees_path, method: :get) do %>
+      <%= text_field_tag :employee, params[:employee],placeholder: 'enter name', onchange: "this.form.submit()" %>
+      <%= select_tag :department,  options_from_collection_for_select(@department, "id", "name", params[:department]), onchange: "this.form.submit()", prompt: "Department", style: "height: 30px;" %>
+      <%= select_tag :position,  options_from_collection_for_select(@position, "id", "name", params[:position]), onchange: "this.form.submit()", prompt: "Position", style: "height: 30px;" %>
+      <%= text_field_tag :login_date, params[:login_date],placeholder: 'select date', onchange: "this.form.submit()"%>
+      <%= number_field_tag :hours_logged, params[:hours_logged],placeholder: 'select hour', onchange: "this.form.submit()"%>
+      <%= link_to 'create csv', create_csv_employees_path(request.query_parameters),{ method: :get,class:"btn btn-primary"} %>  
+    <% end %>
+  </div> 
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Department</th>
+        <th scope="col">Designation</th>
+        <th scope="col">Day / Hours</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @search_results.each do |result|%>
+        <tr>
+          <td><%= result.name %></td>
+          <td><%= result.email%></td>
+          <td><%= result.phone%></td>
+          <td><%= result.department.name rescue nil %></td>
+          <td><%= result.position.name rescue nil %></td>
+          <td>
+            <%result.timelogs.each do|t|%>
+              <%=t.date%>,
+              <%=t.hours_logged%><br>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $("#login_date").datepicker({
+    changeMonth: true,
+    changeYear: true,
+    yearRange:'2010:2019',
+    dateFormat: 'dd/mm/yy'
+  });
+</script>
